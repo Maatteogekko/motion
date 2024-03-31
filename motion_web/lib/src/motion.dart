@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_dynamic_calls,argument_type_not_assignable,invalid_assignment, inference_failure_on_function_invocation, strict_raw_type
+
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:html' as html;
