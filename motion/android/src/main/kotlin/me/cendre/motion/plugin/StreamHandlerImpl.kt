@@ -14,17 +14,23 @@ internal class StreamHandlerImpl(
 ) : EventChannel.StreamHandler {
     private var sensorEventListener: SensorEventListener? = null
 
-    private val sensor: Sensor by lazy {
+    private val sensor: Sensor? by lazy {
         sensorManager.getDefaultSensor(sensorType)
     }
 
     override fun onListen(arguments: Any?, events: EventSink) {
-        sensorEventListener = createSensorEventListener(events)
-        sensorManager.registerListener(sensorEventListener, sensor, updateInterval)
+        sensor?.let {
+            sensorEventListener = createSensorEventListener(events)
+            sensorManager.registerListener(sensorEventListener, it, updateInterval)
+        } ?: run {
+            events.error("SENSOR_UNAVAILABLE", "Sensor not available on this device.", null)
+        }
     }
 
     override fun onCancel(arguments: Any?) {
-        sensorManager.unregisterListener(sensorEventListener)
+        sensorEventListener?.let {
+            sensorManager.unregisterListener(it)
+        }
     }
 
     private fun createSensorEventListener(events: EventSink): SensorEventListener {
